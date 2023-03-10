@@ -4,20 +4,19 @@ import Logo from "./Logo";
 import { uniqBy } from "lodash";
 import { UserContext } from "./UserContext";
 import axios from "axios";
+import Contact from "./Contact";
 
 const Chat = () => {
   const [ws, setWs] = useState(null);
   const [onlinePeople, setOnlinePeople] = useState({});
+  const [offlinePeople, setOfflinePeople] = useState({});
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
+
   const divUnderMessages = useRef();
 
-  const { username, id } = useContext(UserContext);
-
-  useEffect(() => {
-    connectToWs();
-  }, [selectedUserId]);
+  const { username, id, setId, setUsername } = useContext(UserContext);
 
   const connectToWs = () => {
     const ws = new WebSocket("ws://localhost:8000");
@@ -31,6 +30,10 @@ const Chat = () => {
     });
   };
 
+  useEffect(() => {
+    connectToWs();
+  }, [selectedUserId]);
+
   const showOnlinePeople = (peopleArray) => {
     const people = {};
     peopleArray.forEach(({ userId, username }) => {
@@ -41,7 +44,6 @@ const Chat = () => {
 
   const handleMessage = (e) => {
     const messageData = JSON.parse(e.data);
-    // console.log({ e, messageData });
 
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
@@ -72,6 +74,14 @@ const Chat = () => {
     ]);
   };
 
+  const logout = () => {
+    axios.post("/logout").then(() => {
+      setWs(null);
+      setId(null);
+      setUsername(null);
+    });
+  };
+
   useEffect(() => {
     const div = divUnderMessages?.current;
 
@@ -79,6 +89,20 @@ const Chat = () => {
       div.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages]);
+
+  useEffect(() => {
+    axios.get("/people").then((res) => {
+      const offlinePeopleArray = res?.data
+        .filter((person) => person?._id !== id)
+        .filter((person) => !Object.keys(onlinePeople).includes(person?._id));
+      const offlinePeople = {};
+      offlinePeopleArray.forEach((p) => {
+        offlinePeople[p._id] = p.username;
+      });
+
+      setOfflinePeople(offlinePeople);
+    });
+  }, [onlinePeople]);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -89,33 +113,60 @@ const Chat = () => {
     }
   }, [selectedUserId]);
 
-  const onlinePeopleExcludingOurself = { ...onlinePeople };
-  delete onlinePeopleExcludingOurself[id];
+  const onlinePeopleExcludingOurUser = { ...onlinePeople };
+  delete onlinePeopleExcludingOurUser[id];
 
   const messagesWithDuplicates = uniqBy(messages, "_id");
 
   return (
     <div className="flex h-screen">
-      <aside className="bg-white w-1/3 ">
-        <Logo />
-        {Object.keys(onlinePeopleExcludingOurself).map((userId) => (
-          <div
-            onClick={() => setSelectedUserId(userId)}
-            key={userId}
-            className={
-              "border-b border-gray-100 flex items-center gap-2 cursor-pointer " +
-              (userId === selectedUserId ? "bg-blue-50" : "")
-            }
+      <aside className="bg-white w-1/3 flex flex-col">
+        <div className="flex-grow">
+          <Logo />
+          {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
+            <Contact
+              key={userId}
+              id={userId}
+              online={true}
+              username={onlinePeopleExcludingOurUser[userId]}
+              onClick={() => setSelectedUserId(userId)}
+              selected={userId === selectedUserId}
+            />
+          ))}
+          {Object.keys(offlinePeople).map((userId) => (
+            <Contact
+              key={userId}
+              id={userId}
+              online={false}
+              username={offlinePeople[userId]}
+              onClick={() => setSelectedUserId(userId)}
+              selected={userId === selectedUserId}
+            />
+          ))}
+        </div>
+        <div className="p-2 text-center flex items-center justify-center">
+          <span className="mr-2 text-sm text-gray-600 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {username}
+          </span>
+          <button
+            onClick={logout}
+            className="text-sm bg-blue-100 py-1 px-2 text-gray-500 border rounded-sm"
           >
-            {userId === selectedUserId && (
-              <div className="w-1 bg-blue-500 h-12 rounded-r-md"></div>
-            )}
-            <div className="flex gap-2 py-2 pl-4 items-center">
-              <Avatar username={onlinePeople[userId]} userId={userId} />
-              <span className="text-gray-800">{onlinePeople[userId]}</span>
-            </div>
-          </div>
-        ))}
+            logout
+          </button>
+        </div>
       </aside>
 
       <section className="flex flex-col bg-blue-50 w-2/3 p-2">

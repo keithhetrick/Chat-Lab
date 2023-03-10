@@ -80,6 +80,11 @@ app.get("/messages/:userId", async (req, res) => {
   res.json(messages);
 });
 
+app.get("/people", async (req, res) => {
+  const users = await User.find({}, { _id: 1, username: 1 });
+  res.json(users);
+});
+
 app.get("/profile", (req, res) => {
   const token = req.cookies?.token;
 
@@ -114,6 +119,13 @@ app.post("/login", async (req, res) => {
       );
     }
   }
+});
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "", { sameSite: "none", secure: true }).json({
+    success: true,
+    message: "User logged out",
+  });
 });
 
 app.post("/register", async (req, res) => {
@@ -160,13 +172,44 @@ const startServer = async () => {
   try {
     connectDB(DB);
     const server = app.listen(PORT, () =>
-      console.log(`\nListening on port ${PORT} on ${ENVIRONMENT} mode`)
+      console.info(`\nListening on port ${PORT} on ${ENVIRONMENT} mode`)
     );
 
     /* WEB SOCKET CONFIG */
     const wss = new WebSocketServer({ server });
 
     wss.on("connection", (connection, req) => {
+      const notifyAboutOnlinePeople = () => {
+        [...wss.clients].forEach((client) => {
+          client.send(
+            JSON.stringify({
+              online: [...wss.clients].map((c) => ({
+                userId: c.userId,
+                username: c.username,
+              })),
+            })
+          );
+        });
+      };
+
+      connection.isAlive = true;
+
+      connection.timer = setInterval(() => {
+        connection.ping();
+
+        connection.deathTimer = setTimeout(() => {
+          connection.isAlive = false;
+          clearInterval(connection.timer);
+          connection.terminate();
+          notifyAboutOnlinePeople();
+          console.warn("\nConnection is dead");
+        }, 1000);
+      }, 5000);
+
+      connection.on("pong", () => {
+        clearTimeout(connection.deathTimer);
+      });
+
       // Get token from cookie
       const cookies = req.headers.cookie;
 
@@ -178,8 +221,6 @@ const startServer = async () => {
           const token = tokenCookieStr.split("=")[1];
           jwt.verify(token, ACCESS_TOKEN_SECRET, {}, (err, userData) => {
             if (err) return res.status(403).json({ error: err });
-
-            // connection.send(`Welcome ${userData.username}!`);
 
             const { userId, username } = userData;
             connection.userId = userId;
@@ -215,17 +256,7 @@ const startServer = async () => {
       });
 
       // Notify all clients of new connection (when a new user logs in/someone connects)
-      [...wss.clients].forEach((client) => {
-        client.send(
-          JSON.stringify({
-            online: [...wss.clients].map((c) => ({
-              userId: c.userId,
-              username: c.username,
-            })),
-          })
-        );
-        // client.send(`There are ${wss.clients.size} clients connected.`);
-      });
+      notifyAboutOnlinePeople();
     });
   } catch (error) {
     console.error("\nERROR:", error);
