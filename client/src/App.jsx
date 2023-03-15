@@ -1,6 +1,6 @@
-import axios from "axios";
 import { UserContextProvider } from "./UserContext";
 import Routes from "./Routes";
+import axios from "axios";
 
 const App = () => {
   axios.defaults.baseURL = "http://localhost:8000";

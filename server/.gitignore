@@ -7,3 +7,8 @@ logs
 
 # env
 .env
+
+# all files in the uploads folder
+uploads
+
+DS_Store

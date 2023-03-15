@@ -16,6 +16,7 @@ import Message from "./models/message.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { WebSocketServer } from "ws";
+import fs from "fs";
 
 import connectDB from "./config/mongoose.config.js";
 
@@ -25,7 +26,9 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+const __dirname = fs.realpathSync(".");
 const bcryptSalt = bcrypt.genSaltSync(10);
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 /* ENVIRONMENT VARIABLES */
 const PORT = process.env.PORT;
@@ -77,6 +80,7 @@ app.get("/messages/:userId", async (req, res) => {
     recipient: { $in: [userId, ourUserId] },
   }).sort({ createdAt: 1 });
 
+  // console.log("\nMessages from SERVER", messages);
   res.json(messages);
 });
 
@@ -231,13 +235,28 @@ const startServer = async () => {
 
       connection.on("message", async (message) => {
         const messageData = JSON.parse(message.toString());
-        const { recipient, text } = messageData;
+        const { recipient, text, file } = messageData;
 
-        if (recipient && text) {
+        let filename = null;
+        if (file) {
+          // console.log("\nSize", file?.data?.length);
+          const parts = file?.name?.split(".");
+          const ext = parts[parts.length - 1];
+          filename = Date.now() + "." + ext;
+          const path = __dirname + "/uploads/" + filename;
+
+          const bufferData = new Buffer(file.data.split(",")[1], "base64");
+          fs.writeFile(path, bufferData, () => {
+            // console.log("file saved:" + path);
+          });
+        }
+
+        if (recipient && (text || file)) {
           const messageDoc = await Message.create({
             sender: connection?.userId,
             recipient,
             text,
+            file: file ? filename : null,
           });
 
           [...wss.clients]
@@ -248,6 +267,7 @@ const startServer = async () => {
                   text,
                   sender: connection?.userId,
                   recipient,
+                  file: file ? filename : null,
                   _id: messageDoc?._id,
                 })
               )

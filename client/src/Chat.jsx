@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import Avatar from "./Avatar";
 import Logo from "./Logo";
 import { uniqBy } from "lodash";
 import { UserContext } from "./UserContext";
@@ -47,31 +46,72 @@ const Chat = () => {
 
     if ("online" in messageData) {
       showOnlinePeople(messageData.online);
+      // console.log("\nMessages", messageData);
     } else if ("text" in messageData) {
-      setMessages((prev) => [...prev, { ...messageData }]);
+      if (messageData.sender === selectedUserId) {
+        setMessages((prev) => [...prev, { ...messageData }]);
+      }
     }
+
+    // console.log("MessageData", messageData);
   };
 
-  const sendMessage = (e) => {
-    e.preventDefault();
+  const sendMessage = (e, file = null) => {
+    if (e) {
+      e.preventDefault();
+    }
 
     ws.send(
       JSON.stringify({
         recipient: selectedUserId,
         text: newMessageText,
+        file,
       })
     );
-    setNewMessageText("");
-    console.log("message sent");
-    setMessages((prev) => [
-      ...prev,
-      {
-        text: newMessageText,
-        sender: id,
-        recipient: selectedUserId,
-        _id: Date.now(),
-      },
-    ]);
+
+    if (file) {
+      axios.get(`/messages/${selectedUserId}`).then((res) => {
+        setMessages(res?.data);
+        // console.log("res?.data", res?.data);
+      });
+    } else {
+      setNewMessageText("");
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: newMessageText,
+          sender: id,
+          recipient: selectedUserId,
+          _id: Date.now(),
+        },
+      ]);
+    }
+  };
+
+  const sendFile = (e) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target?.files?.[0]);
+    reader.onload = () => {
+      sendMessage(null, {
+        name: e.target.files[0].name,
+        data: reader.result,
+      });
+    };
+  };
+
+  // make an alert that triggers whenever a new message is sent
+  const alert = (message) => {
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+      new Notification(message);
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification(message);
+        }
+      });
+    }
   };
 
   const logout = () => {
@@ -108,7 +148,7 @@ const Chat = () => {
     if (selectedUserId) {
       axios.get(`/messages/${selectedUserId}`).then((res) => {
         setMessages(res?.data);
-        console.log("res?.data", res?.data);
+        // console.log("res?.data", res?.data);
       });
     }
   }, [selectedUserId]);
@@ -196,6 +236,36 @@ const Chat = () => {
                       }
                     >
                       {message?.text}
+                      {message?.file && (
+                        <div>
+                          <a
+                            className="uborder-b flex items-center gap-1"
+                            href={
+                              axios.defaults.baseURL +
+                              "/uploads/" +
+                              message?.file
+                            }
+                            target="_blank"
+                            download={message?.file?.name}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
+                              />
+                            </svg>
+                            {message?.file}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -215,6 +285,26 @@ const Chat = () => {
               placeholder="Type your message here"
               className="bg-white flex-grow border rounded-sm p-2"
             />
+            <label
+              type="button"
+              className="bg-blue-200 p-2 text-gray-600 rounded-sm border border-blue-200 cursor-pointer"
+            >
+              <input type="file" className="hidden" onChange={sendFile} />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
+                />
+              </svg>
+            </label>
             <button
               type="submit"
               className="bg-blue-500 p-2 text-white rounded-sm"
