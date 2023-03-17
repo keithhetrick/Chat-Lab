@@ -1,6 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.chat__lab__font {
+  font-family: "Bebas Neue", cursive;
+}
 
 /* Dark Mode */
 html[data-theme="dark"] {

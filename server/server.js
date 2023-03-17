@@ -1,22 +1,23 @@
 "use strict";
 
 import express from "express";
-import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import morgan, { token } from "morgan";
+import morgan from "morgan";
 import corsOptions from "./config/corsOptions.js";
 import { logger } from "./middleware/logger.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
+import { Configuration, OpenAIApi } from "openai";
 import User from "./models/user.model.js";
 import Message from "./models/message.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { WebSocketServer } from "ws";
 import fs from "fs";
+import openAiRoutes from "./routes/openai.js";
 
 import connectDB from "./config/mongoose.config.js";
 
@@ -35,6 +36,7 @@ const PORT = process.env.PORT;
 const ENVIRONMENT = process.env.NODE_ENV;
 const DB = process.env.MONGODB_URL;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 /* MIDDLEWARE */
 app.use(helmet());
@@ -63,11 +65,20 @@ const getUserDataFromRequest = async (req) => {
   });
 };
 
+/* OPENAI CONFIG */
+const configuration = new Configuration({
+  apiKey: OPENAI_API_KEY,
+});
+export const openai = new OpenAIApi(configuration);
+
+/* ROUTES */
 app.get("/test", (req, res) => {
   res.json(
     `Hello from server http://localhost:${PORT}! Currently running on ${ENVIRONMENT} mode.`
   );
 });
+
+app.use("/api/openai", openAiRoutes);
 
 app.get("/messages/:userId", async (req, res) => {
   const { userId } = req.params;
