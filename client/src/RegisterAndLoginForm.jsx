@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { UserContext } from "./UserContext.jsx";
 // import AnimatedCursor from "react-animated-cursor";
+import LOGO from "./assets/logo.svg";
 
 function RegisterAndLoginForm() {
   const [username, setUsername] = useState("");
@@ -12,7 +13,7 @@ function RegisterAndLoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = isLoginOrRegister === "register" ? "register" : "login";
+    const url = isLoginOrRegister === "register" ? "register" : "api/login";
     const { data } = await axios.post(url, { username, password });
     setLoggedInUsername(username);
     setId(data.id);
@@ -22,7 +23,7 @@ function RegisterAndLoginForm() {
     <video
       aria-hidden="true"
       muted
-      className="z-10 absolute max-h-screen h-screen w-screen object-cover transition-opacity duration-300 pointer visible opacity-100"
+      className="z-10 absolute max-h-screen h-screen w-screen object-cover transition-opacity duration-300 pointer visible opacity-100 "
       autoPlay
       loop
       playsInline
@@ -42,7 +43,7 @@ function RegisterAndLoginForm() {
       {/* <AnimatedCursor /> */}
       <label
         id="landing__page__label"
-        className="flex text-center text-6xl mt-1 px-4 justify-between chat__lab__font"
+        className="flex text-center text-6xl my-3 px-4 justify-between chat__lab__font"
       >
         {LABEL_CHARACTERS.map((char, i) => (
           <span key={i} className="text-black font-extrabold">
@@ -54,12 +55,15 @@ function RegisterAndLoginForm() {
       <div>{VIDEO_SOURCE}</div>
 
       <form
-        className="z-20 w-fit h-fit bg-slate-100/80 rounded-sm py-10 px-12 m-auto absolute top-0 bottom-0 left-0 right-0 items-center shadow-lg space-y-6"
+        className="z-20 w-fit h-fit bg-slate-100/90 rounded-sm py-10 px-12 m-auto absolute top-0 bottom-0 left-0 right-0 items-center shadow-lg space-y-6"
         onSubmit={handleSubmit}
         action="#"
       >
-        <div className="text-center text-2xl font-bold mb-6 chat__lab__font chat__lab__font">
-          {isLoginOrRegister === "register" ? "REGISTER" : "LOGIN"}
+        <div className="flex items-center mb-6 justify-center gap-2">
+          <img src={LOGO} alt="logo" className="w-12 h-12" />
+          <div className="text-center text-2xl font-bold tracking-wide chat__lab__font chat__lab__font">
+            {isLoginOrRegister === "register" ? "REGISTER" : "LOGIN"}
+          </div>
         </div>
         <input
           value={username}
@@ -67,7 +71,7 @@ function RegisterAndLoginForm() {
           type="text"
           placeholder="username"
           id="username"
-          className="block w-full rounded-sm p-2 mb-2 border chat__lab__font"
+          className="block w-full rounded-sm p-2 tracking-wide mb-2 border chat__lab__font"
           required
         />
         <input
@@ -76,10 +80,10 @@ function RegisterAndLoginForm() {
           type="password"
           placeholder="password"
           id="password"
-          className="block w-full rounded-sm p-2 mb-2 border chat__lab__font"
+          className="block w-full rounded-sm p-2 mb-2 tracking-wide border chat__lab__font"
           required
         />
-        <button className="bg-blue-500 text-white block w-full chat__lab__font rounded-sm p-2">
+        <button className="bg-blue-500 tracking-wide text-white block w-full chat__lab__font rounded-sm p-2">
           {isLoginOrRegister === "register" ? "Register" : "Login"}
         </button>
         <div className="text-center mt-4 chat__lab__font">
@@ -87,7 +91,7 @@ function RegisterAndLoginForm() {
             <div>
               Already a member?
               <button
-                className="ml-1 text-red-700"
+                className="ml-1 text-[#ff5c0f] hover:text-[#df0606]"
                 onClick={() => setIsLoginOrRegister("login")}
               >
                 Login here
@@ -98,7 +102,7 @@ function RegisterAndLoginForm() {
             <div>
               Dont have an account?
               <button
-                className="ml-1 text-red-700"
+                className="ml-1 text-[#ff5c0f] hover:text-[#df0606]"
                 onClick={() => setIsLoginOrRegister("register")}
               >
                 Register

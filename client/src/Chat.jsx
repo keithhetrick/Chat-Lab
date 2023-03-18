@@ -115,7 +115,7 @@ const Chat = () => {
   };
 
   const logout = () => {
-    axios.post("/logout").then(() => {
+    axios.post("/api/logout").then(() => {
       setWs(null);
       setId(null);
       setUsername(null);
@@ -158,9 +158,11 @@ const Chat = () => {
 
   const messagesWithDuplicates = uniqBy(messages, "_id");
 
+  // if user is online, animate-ping will be added to the circle
+
   return (
     <div className="flex h-screen">
-      <aside className="bg-white w-1/3 flex flex-col">
+      <aside className="bg-[#f6f6f6] w-1/3 flex flex-col">
         <div className="flex-grow">
           <Logo />
           {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
@@ -184,7 +186,7 @@ const Chat = () => {
             />
           ))}
         </div>
-        <div className="p-2 text-center flex items-center justify-center">
+        <div className="p-2 text-center flex items-center justify-center border-t bg-[#fffaf7]">
           <span className="mr-2 text-sm text-gray-600 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +204,7 @@ const Chat = () => {
           </span>
           <button
             onClick={logout}
-            className="text-sm bg-blue-100 py-1 px-2 text-gray-500 border rounded-sm"
+            className="text-sm bg-blue-200 py-1 px-2 text-gray-500 border rounded-md"
           >
             logout
           </button>
@@ -232,7 +234,7 @@ const Chat = () => {
                         "text-left inline-block p-2 my-2 rounded-md text-sm " +
                         (message?.sender === id
                           ? "bg-blue-500 text-white"
-                          : "bg-white text-gray-500")
+                          : "bg-white text-gray-800")
                       }
                     >
                       {message?.text}

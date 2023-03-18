@@ -19,7 +19,7 @@ const Contact = ({ id, username, onClick, selected, online }) => {
       key={id}
       onClick={() => onClick(id)}
       className={
-        "border-b border-gray-100 flex items-center gap-2 cursor-pointer " +
+        "border-b border-gray-200 flex items-center gap-2 cursor-pointer " +
         (selected ? "bg-blue-50" : "")
       }
     >

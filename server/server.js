@@ -4,22 +4,25 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import corsOptions from "./config/corsOptions.js";
 import { logger } from "./middleware/logger.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import { Configuration, OpenAIApi } from "openai";
-import User from "./models/user.model.js";
+// import User from "./models/user.model.js";
 import Message from "./models/message.model.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import { WebSocketServer } from "ws";
 import fs from "fs";
 import openAiRoutes from "./routes/openai.js";
 
 import connectDB from "./config/mongoose.config.js";
+
+import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -28,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const __dirname = fs.realpathSync(".");
-const bcryptSalt = bcrypt.genSaltSync(10);
+// const bcryptSalt = bcrypt.genSaltSync(10);
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 /* ENVIRONMENT VARIABLES */
@@ -72,13 +75,16 @@ const configuration = new Configuration({
 export const openai = new OpenAIApi(configuration);
 
 /* ROUTES */
-app.get("/test", (req, res) => {
+app.get("/", async (req, res) => {
   res.json(
-    `Hello from server http://localhost:${PORT}! Currently running on ${ENVIRONMENT} mode.`
+    `Hello from server http://localhost:${PORT}! Server currently running on ${ENVIRONMENT} mode.`
   );
 });
 
 app.use("/api/openai", openAiRoutes);
+
+app.use("/", userRoutes);
+app.use("/", authRoutes);
 
 app.get("/messages/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -95,10 +101,10 @@ app.get("/messages/:userId", async (req, res) => {
   res.json(messages);
 });
 
-app.get("/people", async (req, res) => {
-  const users = await User.find({}, { _id: 1, username: 1 });
-  res.json(users);
-});
+// app.get("/people", async (req, res) => {
+//   const users = await User.find({}, { _id: 1, username: 1 });
+//   res.json(users);
+// });
 
 app.get("/profile", (req, res) => {
   const token = req.cookies?.token;
@@ -114,63 +120,63 @@ app.get("/profile", (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const candidate = await User.findOne({ username });
+// app.post("/login", async (req, res) => {
+//   const { username, password } = req.body;
+//   const candidate = await User.findOne({ username });
 
-  if (candidate) {
-    const authPassword = bcrypt.compareSync(password, candidate.password);
-    if (authPassword) {
-      jwt.sign(
-        { userId: candidate._id, username },
-        ACCESS_TOKEN_SECRET,
-        {},
-        (err, token) => {
-          res.cookie("token", token, { sameSite: "none", secure: true }).json({
-            success: true,
-            id: candidate._id,
-          });
-        }
-      );
-    }
-  }
-});
+//   if (candidate) {
+//     const authPassword = bcrypt.compareSync(password, candidate.password);
+//     if (authPassword) {
+//       jwt.sign(
+//         { userId: candidate._id, username },
+//         ACCESS_TOKEN_SECRET,
+//         {},
+//         (err, token) => {
+//           res.cookie("token", token, { sameSite: "none", secure: true }).json({
+//             success: true,
+//             id: candidate._id,
+//           });
+//         }
+//       );
+//     }
+//   }
+// });
 
-app.post("/logout", (req, res) => {
-  res.cookie("token", "", { sameSite: "none", secure: true }).json({
-    success: true,
-    message: "User logged out",
-  });
-});
+// app.post("/logout", (req, res) => {
+//   res.cookie("token", "", { sameSite: "none", secure: true }).json({
+//     success: true,
+//     message: "User logged out",
+//   });
+// });
 
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
-    const createdUser = await User.create({
-      username: username,
-      password: hashedPassword,
-    });
-    jwt.sign(
-      { userId: createdUser._id, username },
-      ACCESS_TOKEN_SECRET,
-      {},
-      (err, token) => {
-        if (err) return res.status(500).json({ error: err });
-        res
-          .cookie("token", token, { sameSite: "none", secure: true })
-          .status(201)
-          .json({
-            success: true,
-            id: createdUser._id,
-            message: `User created: ${username}`,
-          });
-      }
-    );
-  } catch (err) {
-    res.status(500).json({ success: false, error: err });
-  }
-});
+// app.post("/register", async (req, res) => {
+//   const { username, password } = req.body;
+//   try {
+//     const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
+//     const createdUser = await User.create({
+//       username: username,
+//       password: hashedPassword,
+//     });
+//     jwt.sign(
+//       { userId: createdUser._id, username },
+//       ACCESS_TOKEN_SECRET,
+//       {},
+//       (err, token) => {
+//         if (err) return res.status(500).json({ error: err });
+//         res
+//           .cookie("token", token, { sameSite: "none", secure: true })
+//           .status(201)
+//           .json({
+//             success: true,
+//             id: createdUser._id,
+//             message: `User created: ${username}`,
+//           });
+//       }
+//     );
+//   } catch (err) {
+//     res.status(500).json({ success: false, error: err });
+//   }
+// });
 
 /* ERROR HANDLING */
 app.use(errorHandler);
