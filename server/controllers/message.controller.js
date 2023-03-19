@@ -89,9 +89,9 @@ export const getMessageById = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Message not found" });
     }
 
-    console.log("messageData", messageData);
+    // messageData = [...messageData];
 
-    res.status(200).json({ success: true, message: messageData });
+    res.status(200).json({ success: true, messageData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: error.message });
