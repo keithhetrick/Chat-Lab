@@ -1,7 +1,17 @@
-import React from "react";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 
 const EditUser = () => {
-  return <div>EditUser</div>;
+  const { username, setUsername } = useContext(UserContext);
+
+  console.log("username", username);
+
+  return (
+    <div>
+      Edit User Page{" "}
+      {username ? <div>Logged in as {username}</div> : <div>Not logged in</div>}
+    </div>
+  );
 };
 
 export default EditUser;

@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "./UserContext.jsx";
 // import AnimatedCursor from "react-animated-cursor";
-import LOGO from "./assets/logo.svg";
 
 function RegisterAndLoginForm() {
   const [username, setUsername] = useState("");
@@ -14,7 +13,7 @@ function RegisterAndLoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = isLoginOrRegister === "register" ? "register" : "api/login";
+    const url = isLoginOrRegister === "register" ? "register" : "login";
     const { data } = await axios.post(url, { username, password });
     setLoggedInUsername(username);
     setId(data.id);

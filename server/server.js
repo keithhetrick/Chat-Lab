@@ -21,6 +21,7 @@ import connectDB from "./config/mongoose.config.js";
 
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -49,21 +50,21 @@ app.use(cors(corsOptions));
 /* MIDDLEWARE LOGGER */
 app.use(logger);
 
-const getUserDataFromRequest = async (req) => {
-  return new Promise((resolve, reject) => {
-    const token = req.cookies?.token;
+// const getUserDataFromRequest = async (req) => {
+//   return new Promise((resolve, reject) => {
+//     const token = req.cookies?.token;
 
-    if (token) {
-      jwt.verify(token, ACCESS_TOKEN_SECRET, {}, (err, userData) => {
-        if (err) return reject(err);
+//     if (token) {
+//       jwt.verify(token, ACCESS_TOKEN_SECRET, {}, (err, userData) => {
+//         if (err) return reject(err);
 
-        resolve(userData);
-      });
-    } else {
-      reject("Unauthorized - no token");
-    }
-  });
-};
+//         resolve(userData);
+//       });
+//     } else {
+//       reject("Unauthorized - no token");
+//     }
+//   });
+// };
 
 /* OPENAI CONFIG */
 const configuration = new Configuration({
@@ -82,23 +83,26 @@ app.use("/api/openai", openAiRoutes);
 
 app.use("/", userRoutes);
 app.use("/", authRoutes);
+app.use("/", messageRoutes);
 
-app.get("/messages/:userId", async (req, res) => {
-  const { userId } = req.params;
+// app.get("/api/messages/:userId", async (req, res) => {
+//   const { userId } = req.params;
+//   try {
+//     const userData = await getUserDataFromRequest(req);
+//     const ourUserId = userData?.userId;
 
-  const userData = await getUserDataFromRequest(req);
-  const ourUserId = userData?.userId;
+//     const messages = await Message.find({
+//       sender: { $in: [userId, ourUserId] },
+//       recipient: { $in: [userId, ourUserId] },
+//     }).sort({ createdAt: 1 });
 
-  const messages = await Message.find({
-    sender: { $in: [userId, ourUserId] },
-    recipient: { $in: [userId, ourUserId] },
-  }).sort({ createdAt: 1 });
+//     res.status(200).json(messages);
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// });
 
-  // console.log("\nMessages from SERVER", messages);
-  res.json(messages);
-});
-
-app.get("/profile", (req, res) => {
+app.get("/api/profile", (req, res) => {
   const token = req.cookies?.token;
 
   if (token) {

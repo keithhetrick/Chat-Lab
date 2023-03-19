@@ -4,6 +4,7 @@ import { uniqBy } from "lodash";
 import { UserContext } from "./UserContext";
 import axios from "axios";
 import Contact from "./Contact";
+import EditUser from "./EditUser";
 
 const Chat = () => {
   const [ws, setWs] = useState(null);
@@ -116,7 +117,7 @@ const Chat = () => {
   };
 
   const logout = () => {
-    axios.post("/api/logout").then(() => {
+    axios.post("/logout").then(() => {
       setWs(null);
       setId(null);
       setUsername(null);
@@ -167,9 +168,9 @@ const Chat = () => {
   return (
     <div className="flex h-screen">
       <aside className="bg-[#f6f6f6] w-1/3 flex flex-col">
-        <div id="contacts__list" className="flex-grow overflow-y-auto ">
+        <div id="contacts__list" className="flex-grow overflow-auto">
           <Logo />
-          <div className="h-fit max-h-fit">
+          <div className="flex-auto">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
                 key={userId}
@@ -241,8 +242,8 @@ const Chat = () => {
         </div>
 
         <div className="flex-grow px-2 pt-2">
-          {editUser && <div>Edit User</div>}
-          {!selectedUserId && editUser ? (
+          {editUser && <EditUser />}
+          {!selectedUserId || (selectedUserId && editUser) ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-gray-400">&larr; Select a person</div>
             </div>
