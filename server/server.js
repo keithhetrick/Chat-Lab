@@ -11,10 +11,8 @@ import corsOptions from "./config/corsOptions.js";
 import { logger } from "./middleware/logger.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import { Configuration, OpenAIApi } from "openai";
-// import User from "./models/user.model.js";
 import Message from "./models/message.model.js";
 import jwt from "jsonwebtoken";
-// import bcrypt from "bcrypt";
 import { WebSocketServer } from "ws";
 import fs from "fs";
 import openAiRoutes from "./routes/openai.js";
@@ -31,7 +29,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 const __dirname = fs.realpathSync(".");
-// const bcryptSalt = bcrypt.genSaltSync(10);
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 /* ENVIRONMENT VARIABLES */
@@ -101,11 +98,6 @@ app.get("/messages/:userId", async (req, res) => {
   res.json(messages);
 });
 
-// app.get("/people", async (req, res) => {
-//   const users = await User.find({}, { _id: 1, username: 1 });
-//   res.json(users);
-// });
-
 app.get("/profile", (req, res) => {
   const token = req.cookies?.token;
 
@@ -119,64 +111,6 @@ app.get("/profile", (req, res) => {
     res.status(401).json({ success: false, message: "Unauthorized" });
   }
 });
-
-// app.post("/login", async (req, res) => {
-//   const { username, password } = req.body;
-//   const candidate = await User.findOne({ username });
-
-//   if (candidate) {
-//     const authPassword = bcrypt.compareSync(password, candidate.password);
-//     if (authPassword) {
-//       jwt.sign(
-//         { userId: candidate._id, username },
-//         ACCESS_TOKEN_SECRET,
-//         {},
-//         (err, token) => {
-//           res.cookie("token", token, { sameSite: "none", secure: true }).json({
-//             success: true,
-//             id: candidate._id,
-//           });
-//         }
-//       );
-//     }
-//   }
-// });
-
-// app.post("/logout", (req, res) => {
-//   res.cookie("token", "", { sameSite: "none", secure: true }).json({
-//     success: true,
-//     message: "User logged out",
-//   });
-// });
-
-// app.post("/register", async (req, res) => {
-//   const { username, password } = req.body;
-//   try {
-//     const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
-//     const createdUser = await User.create({
-//       username: username,
-//       password: hashedPassword,
-//     });
-//     jwt.sign(
-//       { userId: createdUser._id, username },
-//       ACCESS_TOKEN_SECRET,
-//       {},
-//       (err, token) => {
-//         if (err) return res.status(500).json({ error: err });
-//         res
-//           .cookie("token", token, { sameSite: "none", secure: true })
-//           .status(201)
-//           .json({
-//             success: true,
-//             id: createdUser._id,
-//             message: `User created: ${username}`,
-//           });
-//       }
-//     );
-//   } catch (err) {
-//     res.status(500).json({ success: false, error: err });
-//   }
-// });
 
 /* ERROR HANDLING */
 app.use(errorHandler);

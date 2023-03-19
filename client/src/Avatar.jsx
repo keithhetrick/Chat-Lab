@@ -30,9 +30,25 @@ const Avatar = ({ username, userId, online }) => {
   const colorIndex = userIdBase10 % colors.length;
   const color = colors[colorIndex];
 
+  if (!username) {
+    return (
+      <div
+        className={`w-8 h-8 relative rounded-full flex items-center ${color}`}
+      >
+        <div className="text-center w-full opacity-70">
+          {username ? username?.[0] : userId?.[0]}
+        </div>
+        <div>
+          <div className="absolute w-3 h-3 bg-green-400 bottom-0 right-0 border border-white rounded-full animate-pulse"></div>
+          <div className="absolute w-3 h-3 bg-green-400 bottom-0 right-0 border border-white rounded-full animate-ping"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`w-8 h-8 relative rounded-full flex items-center ${color}`}>
-      <div className="text-center w-full opacity-70">{username[0]}</div>
+      <div className="text-center w-full opacity-70">{username?.[0]}</div>
       {online && (
         <div>
           <div className="absolute w-3 h-3 bg-green-400 bottom-0 right-0 border border-white rounded-full animate-pulse"></div>

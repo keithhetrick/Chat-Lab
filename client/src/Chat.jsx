@@ -12,6 +12,7 @@ const Chat = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [editUser, setEditUser] = useState(false);
 
   const divUnderMessages = useRef();
 
@@ -158,33 +159,38 @@ const Chat = () => {
 
   const messagesWithDuplicates = uniqBy(messages, "_id");
 
-  // if user is online, animate-ping will be added to the circle
+  const handleEdit = () => {
+    setEditUser((prev) => !prev);
+    console.log("editUser", editUser);
+  };
 
   return (
     <div className="flex h-screen">
       <aside className="bg-[#f6f6f6] w-1/3 flex flex-col">
-        <div className="flex-grow">
+        <div id="contacts__list" className="flex-grow overflow-y-auto ">
           <Logo />
-          {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
-            <Contact
-              key={userId}
-              id={userId}
-              online={true}
-              username={onlinePeopleExcludingOurUser[userId]}
-              onClick={() => setSelectedUserId(userId)}
-              selected={userId === selectedUserId}
-            />
-          ))}
-          {Object.keys(offlinePeople).map((userId) => (
-            <Contact
-              key={userId}
-              id={userId}
-              online={false}
-              username={offlinePeople[userId]}
-              onClick={() => setSelectedUserId(userId)}
-              selected={userId === selectedUserId}
-            />
-          ))}
+          <div className="h-fit max-h-fit">
+            {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
+              <Contact
+                key={userId}
+                id={userId}
+                online={true}
+                username={onlinePeopleExcludingOurUser[userId]}
+                onClick={() => setSelectedUserId(userId)}
+                selected={userId === selectedUserId}
+              />
+            ))}
+            {Object.keys(offlinePeople).map((userId) => (
+              <Contact
+                key={userId}
+                id={userId}
+                online={false}
+                username={offlinePeople[userId]}
+                onClick={() => setSelectedUserId(userId)}
+                selected={userId === selectedUserId}
+              />
+            ))}
+          </div>
         </div>
         <div className="p-2 text-center flex items-center justify-center border-t bg-[#fffaf7]">
           <span className="mr-2 text-sm text-gray-600 flex items-center">
@@ -211,13 +217,36 @@ const Chat = () => {
         </div>
       </aside>
 
-      <section className="flex flex-col bg-blue-50 w-2/3 p-2">
-        <div className="flex-grow">
-          {!selectedUserId && (
+      <section className="flex flex-col bg-blue-50 w-2/3">
+        <div className="w-full border bg-slate-100 text-sm text-gray-600 flex justify-end p-2">
+          {username}
+
+          <div
+            className="ml-auto flex items-center cursor-pointer"
+            onClick={handleEdit}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4 mr-2"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 1a9 9 0 110 18 9 9 0 010-18zm0 9a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1zm0-5a1 1 0 100 2 1 1 0 000-2z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div className="flex-grow px-2 pt-2">
+          {editUser && <div>Edit User</div>}
+          {!selectedUserId && editUser ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-gray-400">&larr; Select a person</div>
             </div>
-          )}
+          ) : null}
 
           {!!selectedUserId && (
             <div className="relative h-full">
@@ -279,7 +308,7 @@ const Chat = () => {
 
         {/* !! converts a value to a boolean */}
         {!!selectedUserId && (
-          <form className="flex gap-2" onSubmit={sendMessage}>
+          <form className="flex gap-2 px-2 pb-2" onSubmit={sendMessage}>
             <input
               type="text"
               value={newMessageText}

@@ -98,7 +98,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findById(req.user.id).exec();
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -132,13 +132,11 @@ export const updateUser = asyncHandler(async (req, res) => {
         message: "User updated",
         user: updatedUser,
       });
-    } else {
-      res.status(404).json({ message: "User not found" });
     }
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Update user failed - ${err.message}`,
+      message: `Updating user failed - ${err.message}`,
     });
   }
 });
