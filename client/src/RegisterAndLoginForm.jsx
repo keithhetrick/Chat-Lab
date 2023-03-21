@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "./UserContext.jsx";
+import ErrorMessage from "./hooks/useErrorMessage.jsx";
 // import AnimatedCursor from "react-animated-cursor";
 
 function RegisterAndLoginForm() {
@@ -10,13 +11,20 @@ function RegisterAndLoginForm() {
   const [isLoginOrRegister, setIsLoginOrRegister] = useState("login");
   const { setUsername: setLoggedInUsername, setId } = useContext(UserContext);
 
+  // ERROR HANDLING
+  const [errors, setErrors] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = isLoginOrRegister === "register" ? "register" : "login";
-    const { data } = await axios.post(url, { username, password });
-    setLoggedInUsername(username);
-    setId(data.id);
+    try {
+      const url = isLoginOrRegister === "register" ? "register" : "login";
+      const { data } = await axios.post(url, { username, password });
+      setLoggedInUsername(username);
+      setId(data?.id);
+    } catch (error) {
+      setErrors(error?.response?.data?.message);
+    }
   };
 
   const VIDEO_SOURCE = (
@@ -60,7 +68,6 @@ function RegisterAndLoginForm() {
       action="#"
     >
       <div className="flex items-center mb-6 justify-center gap-2">
-        {/* <img src={LOGO} alt="logo" className="w-12 h-12" /> */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -74,6 +81,15 @@ function RegisterAndLoginForm() {
           {isLoginOrRegister === "register" ? "REGISTER" : "LOGIN"}
         </div>
       </div>
+      {errors && (
+        <div className="mb-2 -mt-4">
+          <ErrorMessage
+            className="text-center"
+            variant={errors ? "danger" : "success"}
+            message={errors ? errors : "Success"}
+          />
+        </div>
+      )}
       <input
         value={username}
         onChange={(ev) => setUsername(ev.target.value)}
@@ -81,7 +97,7 @@ function RegisterAndLoginForm() {
         placeholder="username"
         id="username"
         className="block w-full rounded-sm p-2 tracking-wide mb-2 border chat__lab__font"
-        required
+        // required
       />
       <input
         value={password}
@@ -90,7 +106,7 @@ function RegisterAndLoginForm() {
         placeholder="password"
         id="password"
         className="block w-full rounded-sm p-2 mb-2 tracking-wide border chat__lab__font"
-        required
+        // required
       />
       <button className="bg-blue-500 tracking-wide text-white block w-full chat__lab__font rounded-sm p-2">
         {isLoginOrRegister === "register" ? "Register" : "Login"}
@@ -129,7 +145,6 @@ function RegisterAndLoginForm() {
       action="#"
     >
       <div className="flex items-center mb-6 justify-center gap-6">
-        {/* <img src={LOGO} alt="logo" className="w-12 h-12" /> */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -143,6 +158,15 @@ function RegisterAndLoginForm() {
           {isLoginOrRegister === "register" ? "REGISTER" : "LOGIN"}
         </div>
       </div>
+      {errors && (
+        <div className="mb-2 -mt-4">
+          <ErrorMessage
+            className="text-center"
+            variant={errors ? "danger" : "success"}
+            message={errors ? errors : "Success"}
+          />
+        </div>
+      )}
       <input
         value={username}
         onChange={(ev) => setUsername(ev.target.value)}
@@ -150,16 +174,16 @@ function RegisterAndLoginForm() {
         placeholder="username"
         id="username"
         className="block w-full rounded-sm p-2 tracking-wide mb-2 border chat__lab__font"
-        required
+        // required
       />
       <input
         value={password}
         onChange={(ev) => setPassword(ev.target.value)}
-        type="password"
+        type="current-password"
         placeholder="password"
         id="password"
         className="block w-full rounded-sm p-2 mb-2 tracking-wide border chat__lab__font"
-        required
+        // required
       />
       <button className="bg-blue-500 tracking-wide text-white block w-full chat__lab__font rounded-sm p-2">
         {isLoginOrRegister === "register" ? "Register" : "Login"}
@@ -207,14 +231,8 @@ function RegisterAndLoginForm() {
           </span>
         ))}
       </label>
-
       <div>{VIDEO_SOURCE}</div>
-
-      {isMobile ? (
-        <div className="z-40 ">{MOBILE_FORM}</div>
-      ) : (
-        <div className="z-40">{DESKTOP_FORM}</div>
-      )}
+      <div className="z-40">{isMobile ? MOBILE_FORM : DESKTOP_FORM}</div>
     </main>
   );
 }

@@ -33,7 +33,7 @@ const Avatar = ({ username, userId, online }) => {
   if (!username) {
     return (
       <div
-        className={`w-8 h-8 relative rounded-full flex items-center ${color}`}
+        className={`w-7 h-7 sm:w-8 sm:h-8 relative rounded-full flex items-center ${color}`}
       >
         <div className="text-center w-full opacity-70">
           {username ? username?.[0] : userId?.[0]}
@@ -47,7 +47,7 @@ const Avatar = ({ username, userId, online }) => {
   }
 
   return (
-    <div className={`w-8 h-8 relative rounded-full flex items-center ${color}`}>
+    <div className={`w-7 h-7 relative rounded-full flex items-center ${color}`}>
       <div className="text-center w-full opacity-70">{username?.[0]}</div>
       {online && (
         <div>

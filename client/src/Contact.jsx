@@ -5,7 +5,7 @@ const Contact = ({ id, username, onClick, selected, online }) => {
   // const countNewMessages = () => {
   //   let count = 0;
   //   for (let i = 0; i < messsages?.length; i++) {
-  //     if (messsages[i]?.read === false) {
+  //     if (messages[i]?.read === false) {
   //       count++;
   //       console.log("Count", count);
   //     }

@@ -3,7 +3,7 @@ import {
   createUser,
   getAllUsers,
   getUserByUsername,
-  // getUserById,
+  getSingleUserById,
   updateUser,
   deleteUser,
 } from "../controllers/user.controller.js";
@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get("/api/users", getAllUsers);
 router.get("/api/people", getUserByUsername);
+router.get("/api/users/:id", getSingleUserById);
 router.patch("/api/users/:id", updateUser);
 router.post("/api/register", createUser);
 router.delete("/api/delete/:id", deleteUser);

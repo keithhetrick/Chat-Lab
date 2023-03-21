@@ -2,6 +2,35 @@
 
 This is a chat room for developers who are interested in artificial intelligence. It is a place to discuss the latest developments in the field, share ideas, and ask questions. There's also a fully integrated OpenAI GPT-3 bot that you can talk code with.
 
+## Chat Lab Built with:
+
+- [React](https://reactjs.org/)
+- [Node.js](https://nodejs.org/en/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [Express Rate Limit](https://www.npmjs.com/package/express-rate-limit)
+- [Express Async Handler](https://www.npmjs.com/package/express-async-handler)
+- [Web Socket](https://socket.io/)
+- [OpenAI ChatGPT-3](https://openai.com/blog/openai-api/)
+- [Tailwind](https://tailwindcss.com/)
+- [UUID](https://www.npmjs.com/package/uuid)
+- [Axios](https://www.npmjs.com/package/axios)
+- [JSON Web Tokens](https://jwt.io/)
+- [Cookie Parser](https://www.npmjs.com/package/cookie-parser)
+- [Body Parser](https://www.npmjs.com/package/body-parser)
+- [Bcrypt](https://www.npmjs.com/package/bcrypt)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Nodemon](https://www.npmjs.com/package/nodemon)
+- [Cors](https://www.npmjs.com/package/cors)
+- [Helmet](https://www.npmjs.com/package/helmet)
+- [Morgan](https://www.npmjs.com/package/morgan)
+- [Date FNS](https://www.npmjs.com/package/date-fns)
+- [Graceful Shutdown](https://www.npmjs.com/package/graceful-shutdown)
+- [AutoPrefixer](https://www.npmjs.com/package/autoprefixer)
+- [PostCSS](https://www.npmjs.com/package/postcss)
+- [Lodash](https://www.npmjs.com/package/lodash)
+
 ## Installation
 
 1. Clone the repo

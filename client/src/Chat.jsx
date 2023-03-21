@@ -74,7 +74,7 @@ const Chat = () => {
     if (file) {
       axios.get(`/messages/${selectedUserId}`).then((res) => {
         setMessages(res?.data);
-        // console.log("res?.data", res?.data);
+        console.table(res?.data);
       });
     } else {
       setNewMessageText("");
@@ -160,17 +160,18 @@ const Chat = () => {
 
   const messagesWithDuplicates = uniqBy(messages, "_id");
 
+  // console.log("\nMessagesWithDuplicates", messagesWithDuplicates);
+
   const handleEdit = () => {
     setEditUser((prev) => !prev);
-    console.log("editUser", editUser);
   };
 
   return (
     <div className="flex h-screen">
-      <aside className="bg-[#f6f6f6] w-1/3 flex flex-col">
+      <aside className="bg-[#f6f6f6] w-1/4 sm:w-1/3 flex flex-col">
         <div id="contacts__list" className="flex-grow overflow-auto">
           <Logo />
-          <div className="flex-auto">
+          <div className="flex-auto text-xs sm:text-base">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
                 key={userId}
@@ -193,13 +194,13 @@ const Chat = () => {
             ))}
           </div>
         </div>
-        <div className="p-2 text-center flex items-center justify-center border-t bg-[#fffaf7]">
+        <div className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#fffaf7]">
           <span className="mr-2 text-sm text-gray-600 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-4 h-4"
+              className="w-4 h-4 sm:"
             >
               <path
                 fillRule="evenodd"
@@ -211,14 +212,14 @@ const Chat = () => {
           </span>
           <button
             onClick={logout}
-            className="text-sm bg-blue-200 py-1 px-2 text-gray-500 border rounded-md"
+            className="text-sm bg-blue-200 py-1 px-2 text-gray-500 border rounded-md hover:bg-blue-300 transition duration-200"
           >
             logout
           </button>
         </div>
       </aside>
 
-      <section className="flex flex-col bg-blue-50 w-2/3">
+      <section className="flex flex-col bg-blue-50 w-3/4 sm:w-2/3">
         <div className="w-full border bg-slate-100 text-sm text-gray-600 flex justify-end p-2">
           {username}
 
@@ -242,14 +243,24 @@ const Chat = () => {
         </div>
 
         <div className="flex-grow px-2 pt-2">
-          {editUser && <EditUser />}
-          {!selectedUserId || (selectedUserId && editUser) ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-gray-400">&larr; Select a person</div>
+          {!selectedUserId || editUser ? (
+            <div className="flex flex-col items-center justify-center h-full relative">
+              <div className=" text-gray-400">
+                {editUser ? (
+                  <EditUser
+                    username={username}
+                    setUsername={setUsername}
+                    setEditUser={setEditUser}
+                    setPassword={setPassword}
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <div className="text-gray-400">&larr; Select a person</div>
+                  </div>
+                )}
+              </div>
             </div>
-          ) : null}
-
-          {!!selectedUserId && (
+          ) : (
             <div className="relative h-full">
               <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithDuplicates.map((message) => (
@@ -307,7 +318,6 @@ const Chat = () => {
           )}
         </div>
 
-        {/* !! converts a value to a boolean */}
         {!!selectedUserId && (
           <form className="flex gap-2 px-2 pb-2" onSubmit={sendMessage}>
             <input

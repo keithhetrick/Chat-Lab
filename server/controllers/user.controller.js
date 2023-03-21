@@ -91,6 +91,26 @@ export const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get user profile by ID
+// @route   GET /api/users/:id
+// @access  Private
+export const getSingleUserById = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Fetching user failed - ${err.message}`,
+    });
+  }
+});
+
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private
@@ -150,10 +170,17 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    } else if (user) {
+      res.clearCookie("token");
     }
 
     res
       .status(200)
       .json({ success: true, message: `User ${user.username} deleted` });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Deleting user failed - ${err.message}`,
+    });
+  }
 });
