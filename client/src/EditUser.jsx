@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 
-const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
-  const { id } = useContext(UserContext);
+const EditUser = ({ username, setUsername, setEditUser }) => {
+  const { password, setPassword } = useContext(UserContext);
+
   const [tempUsername, setTempUsername] = useState(username);
+  const [tempPassword, setTempPassword] = useState(password || "");
 
   // ERROR HANDLING
   const [errors, setErrors] = useState(null);
@@ -11,10 +13,12 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
   const handleUpdateUserSubmit = async (e) => {
     e.preventDefault();
 
-    console.table({ username, password });
     setUsername(tempUsername);
-
-    // setPassword(tempPassword);
+    setPassword(tempPassword);
+    console.table({
+      username: tempUsername,
+      password: tempPassword,
+    });
   };
 
   const handleClose = () => {
@@ -42,7 +46,6 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
             <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
           </svg>
           <div className="text-center text-2xl font-bold tracking-wide chat__lab__font chat__lab__font">
-            {/* {isLoginOrRegister === "register" ? "REGISTER" : "LOGIN"} */}
             Update
           </div>
         </div>
@@ -56,7 +59,7 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
           </div>
         )}
         <input
-          value={tempUsername}
+          value={tempUsername || ""}
           onChange={(ev) => setTempUsername(ev.target.value)}
           type="text"
           placeholder="username"
@@ -65,8 +68,8 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
           // required
         />
         <input
-          value={password}
-          onChange={(ev) => setPassword(ev.target.value)}
+          value={tempPassword || ""}
+          onChange={(ev) => setTempPassword(ev.target.value)}
           type="current-password"
           placeholder="password"
           id="password"
@@ -74,7 +77,6 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
           // required
         />
         <button className="bg-blue-500 tracking-wide text-white block w-full chat__lab__font rounded-sm p-2">
-          {/* {isLoginOrRegister === "register" ? "Register" : "Login"} */}
           Update
         </button>
         {/* have Cnacel button hide the edit window */}
@@ -83,7 +85,6 @@ const EditUser = ({ username, setUsername, setEditUser, setPassword }) => {
         className="bg-gray-500 tracking-wide text-white block w-full chat__lab__font rounded-sm p-2"
         onClick={handleClose}
       >
-        {/* {isLoginOrRegister === "register" ? "Register" : "Login"} */}
         Cancel
       </button>
     </div>

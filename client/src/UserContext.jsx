@@ -8,6 +8,17 @@ export const UserContextProvider = ({ children }) => {
   const [id, setId] = useState(null);
   const [password, setPassword] = useState(null);
 
+  // get user ID and Username
+  useEffect(() => {
+    axios.get(`/users/${id}`).then((response) => {
+      setId(response?.data?.userId);
+      setUsername(response?.data?.username);
+      setPassword(response?.data?.user?.password);
+
+      // console.log("\nUSER CONTEXT response", response?.data?.user?.password);
+    });
+  }, []);
+
   useEffect(() => {
     axios.get("/profile").then((response) => {
       setId(response?.data?.userId);
@@ -15,16 +26,6 @@ export const UserContextProvider = ({ children }) => {
 
       // console.log("\nUSER CONTEXT response", response);
     });
-  }, []);
-
-  // get user Password from ID
-  useEffect(() => {
-    if (id) {
-      axios.get(`/users/${id}`).then((response) => {
-        setPassword(response?.data?.password);
-        console.log("\nUSER CONTEXT response", response);
-      });
-    }
   }, []);
 
   console.log("\nUSER CONTEXT", { password });

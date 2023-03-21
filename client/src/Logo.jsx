@@ -36,7 +36,10 @@ const Logo = () => {
   }, [darkMode]);
 
   return (
-    <div className="text-indigo-600 flex justify-between p-1 sm:p-4">
+    <div
+      id="sidebar__header__section"
+      className="text-indigo-600 flex justify-between p-1 sm:p-4"
+    >
       <div className="items-center text-center font-bold flex gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"

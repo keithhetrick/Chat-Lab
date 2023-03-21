@@ -167,11 +167,17 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      <aside className="bg-[#f6f6f6] w-1/4 sm:w-1/3 flex flex-col">
-        <div id="contacts__list" className="flex-grow overflow-auto">
+    <div id="window__section" className="flex h-screen">
+      <aside
+        id="sidebar__section"
+        className="bg-[#f6f6f6] w-1/4 sm:w-1/3 flex flex-col"
+      >
+        <div
+          id="sidebar__contacts__section"
+          className="flex-grow overflow-auto"
+        >
           <Logo />
-          <div className="flex-auto text-xs sm:text-base">
+          <div id="contacts__list" className="flex-auto text-xs sm:text-base">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
                 key={userId}
@@ -194,7 +200,10 @@ const Chat = () => {
             ))}
           </div>
         </div>
-        <div className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#fffaf7]">
+        <div
+          id="sideber__footer__section"
+          className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#fffaf7]"
+        >
           <span className="mr-2 text-sm text-gray-600 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -219,8 +228,14 @@ const Chat = () => {
         </div>
       </aside>
 
-      <section className="flex flex-col bg-blue-50 w-3/4 sm:w-2/3">
-        <div className="w-full border bg-slate-100 text-sm text-gray-600 flex justify-end p-2">
+      <section
+        id="messages__section"
+        className="flex flex-col bg-blue-50 w-3/4 sm:w-2/3"
+      >
+        <div
+          id="user__header"
+          className="w-full border bg-slate-100 text-sm text-gray-600 flex justify-end p-2"
+        >
           {username}
 
           <div
@@ -242,7 +257,7 @@ const Chat = () => {
           </div>
         </div>
 
-        <div className="flex-grow px-2 pt-2">
+        <main id="chat__window" className="flex-grow px-2 pt-2">
           {!selectedUserId || editUser ? (
             <div className="flex flex-col items-center justify-center h-full relative">
               <div className=" text-gray-400">
@@ -251,11 +266,15 @@ const Chat = () => {
                     username={username}
                     setUsername={setUsername}
                     setEditUser={setEditUser}
-                    setPassword={setPassword}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
-                    <div className="text-gray-400">&larr; Select a person</div>
+                    <div className="text-gray-400">
+                      <span className="animate-pulse hover:animate-bounce cursor-pointer mr-2">
+                        &larr;
+                      </span>
+                      Select a person
+                    </div>
                   </div>
                 )}
               </div>
@@ -316,10 +335,14 @@ const Chat = () => {
               </div>
             </div>
           )}
-        </div>
+        </main>
 
         {!!selectedUserId && (
-          <form className="flex gap-2 px-2 pb-2" onSubmit={sendMessage}>
+          <form
+            id="chat__message__form"
+            className="flex gap-2 px-2 pb-2"
+            onSubmit={sendMessage}
+          >
             <input
               type="text"
               value={newMessageText}

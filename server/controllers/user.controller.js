@@ -32,9 +32,9 @@ export const createUser = asyncHandler(async (req, res) => {
           });
       }
     );
-  } catch (err) {
-    console.error("\nERROR FROM USER CONTROLLER:", err);
-    res.status(500).json({ success: false, error: err });
+  } catch (error) {
+    console.error("\nERROR FROM USER CONTROLLER:", error);
+    res.status(500).json({ success: false, error: error });
   }
 });
 
@@ -58,7 +58,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Fetching users failed - ${err.message}`,
+      message: `Fetching users failed - ${error.message}`,
     });
   }
 });
@@ -86,7 +86,7 @@ export const getUserById = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Fetching user failed - ${err.message}`,
+      message: `Fetching user failed - ${error.message}`,
     });
   }
 });
@@ -102,11 +102,21 @@ export const getSingleUserById = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // // decode password
+    // const decodedPassword = bcrypt.compareSync(
+    //   req.body.password,
+    //   user.password
+    // );
+
+    // if (!decodedPassword) {
+    //   return res.status(401).json({ message: "Invalid password" });
+    // }
+
     res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Fetching user failed - ${err.message}`,
+      message: `Fetching user failed - ${error.message}`,
     });
   }
 });
@@ -156,7 +166,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Updating user failed - ${err.message}`,
+      message: `Updating user failed - ${error.message}`,
     });
   }
 });
@@ -180,7 +190,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Deleting user failed - ${err.message}`,
+      message: `Deleting user failed - ${error.message}`,
     });
   }
 });
