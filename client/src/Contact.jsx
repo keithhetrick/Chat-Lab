@@ -24,7 +24,7 @@ const Contact = ({ id, username, onClick, selected, online }) => {
       }
     >
       {selected && <div className="w-1 bg-blue-500 h-12 rounded-r-md"></div>}
-      <div className="flex gap-2 p-2 px-4 w-full items-center justify-between">
+      <div className="flex gap-2 p-2 px-4 w-full items-center justify-between hover:transform hover:scale-105 transition-all duration-100">
         <div className="flex gap-2 items-center">
           <Avatar online={online} username={username} userId={id} />
           <span className="text-gray-800">{username}</span>

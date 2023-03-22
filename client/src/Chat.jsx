@@ -5,6 +5,7 @@ import { UserContext } from "./UserContext";
 import axios from "axios";
 import Contact from "./Contact";
 import EditUser from "./EditUser";
+import AiChat from "./AI_Chat";
 
 const Chat = () => {
   const [ws, setWs] = useState(null);
@@ -177,6 +178,7 @@ const Chat = () => {
           className="flex-grow overflow-auto"
         >
           <Logo />
+          {/* <AiChat /> */}
           <div id="contacts__list" className="flex-auto text-xs sm:text-base">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
@@ -202,14 +204,15 @@ const Chat = () => {
         </div>
         <div
           id="sideber__footer__section"
-          className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#fffaf7]"
+          className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#ffe8d7]"
+          // bg-[#fffaf7]
         >
-          <span className="mr-2 text-sm text-gray-600 flex items-center">
+          <span className="mr-2 text-sm text-gray-600 flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-4 h-4 sm:"
+              className="w-4 h-4 sm:w-5 sm:h-5"
             >
               <path
                 fillRule="evenodd"
@@ -221,7 +224,7 @@ const Chat = () => {
           </span>
           <button
             onClick={logout}
-            className="text-sm bg-blue-200 py-1 px-2 text-gray-500 border rounded-md hover:bg-blue-300 transition duration-200"
+            className="bg-blue-500 tracking-wide text-white text-sm block w-fit max-h-fit chat__lab__font rounded-sm py-1 px-2 hover:bg-blue-600 transition duration-200"
           >
             logout
           </button>
@@ -281,6 +284,13 @@ const Chat = () => {
             </div>
           ) : (
             <div className="relative h-full">
+              {/* {editUser && !selectedUserId ? (
+                <EditUser
+                  username={username}
+                  setUsername={setUsername}
+                  setEditUser={setEditUser}
+                />
+              ) : null} */}
               <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithDuplicates.map((message) => (
                   <div
@@ -338,9 +348,22 @@ const Chat = () => {
         </main>
 
         {!!selectedUserId && (
+          // <div className="flex flex-col h-full relative">
+          //   {editUser ? (
+          //     <div className="flex-grow px-2 pt-2">
+          //       <div>
+          //         <EditUser
+          //           username={username}
+          //           setUsername={setUsername}
+          //           setEditUser={setEditUser}
+          //         />
+          //       </div>
+          //     </div>
+          //   ) : null}
           <form
             id="chat__message__form"
-            className="flex gap-2 px-2 pb-2"
+            className="flex gap-2 px-2 pb-2 overflow-auto"
+            // className="flex absolute bottom-0 w-full gap-2 px-2 pb-2"
             onSubmit={sendMessage}
           >
             <input
@@ -390,6 +413,7 @@ const Chat = () => {
               </svg>
             </button>
           </form>
+          // </div>
         )}
       </section>
     </div>

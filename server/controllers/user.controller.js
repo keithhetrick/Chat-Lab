@@ -149,7 +149,7 @@ export const updateUser = asyncHandler(async (req, res) => {
 
       res.status(200).json({
         success: true,
-        message: "User updated",
+        message: `User ${updatedUser.username} updated`,
         user: updatedUser,
       });
     }

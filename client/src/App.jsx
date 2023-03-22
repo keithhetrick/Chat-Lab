@@ -8,7 +8,9 @@ const App = () => {
 
   return (
     <UserContextProvider>
-      <Routes />
+      <Routes
+      // className="max-w-screen-sm w-screen"
+      />
     </UserContextProvider>
   );
 };
