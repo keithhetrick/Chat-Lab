@@ -15,6 +15,13 @@ const Chat = () => {
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [editUser, setEditUser] = useState(false);
+  const [aiChat, setAiChat] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+
+  const handleAiChannelSelect = () => {
+    setIsSelected((prev) => !prev);
+    console.log("isSelected", isSelected);
+  };
 
   const divUnderMessages = useRef();
 
@@ -178,7 +185,14 @@ const Chat = () => {
           className="flex-grow overflow-auto"
         >
           <Logo />
-          {/* <AiChat /> */}
+          <div onClick={handleAiChannelSelect}>
+            <AiChat
+              aiChat={aiChat}
+              setAiChat={setAiChat}
+              setIsSelected={setIsSelected}
+              isSelected={isSelected}
+            />
+          </div>
           <div id="contacts__list" className="flex-auto text-xs sm:text-base">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
@@ -291,6 +305,20 @@ const Chat = () => {
                   setEditUser={setEditUser}
                 />
               ) : null} */}
+
+              {isSelected ? (
+                <div className="flex flex-col items-center justify-center h-full relative">
+                  <div className=" text-gray-400">
+                    <AiChat
+                      aiChat={aiChat}
+                      setAiChat={setAiChat}
+                      setIsSelected={setIsSelected}
+                      isSelected={isSelected}
+                    />
+                  </div>
+                </div>
+              ) : null}
+
               <div className="overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
                 {messagesWithDuplicates.map((message) => (
                   <div
@@ -303,7 +331,7 @@ const Chat = () => {
                       className={
                         "text-left inline-block p-2 my-2 rounded-md text-sm " +
                         (message?.sender === id
-                          ? "bg-blue-500 text-white"
+                          ? "bg-blue-500 text-white" // this is our user text
                           : "bg-white text-gray-800")
                       }
                     >

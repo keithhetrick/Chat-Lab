@@ -21,7 +21,7 @@ import fs from "fs";
 
 import connectDB from "./config/mongoose.config.js";
 
-import openAiRoutes from "./routes/openai.js";
+import openAiRoutes from "./routes/openai.routes.js";
 import userRoutes from "./routes/user.routes.js";
 // import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/message.routes.js";
@@ -68,11 +68,10 @@ app.get("/", async (req, res) => {
   );
 });
 
-app.use("/api/openai", openAiRoutes);
-
 app.use("/", userRoutes);
 // app.use("/", authRoutes);
 app.use("/", messageRoutes);
+app.use("/", openAiRoutes);
 
 app.get("/api/people", async (req, res) => {
   const users = await User.find({}, { _id: 1, username: 1 });
@@ -104,7 +103,7 @@ app.post("/api/login", async (req, res) => {
 app.post("/api/logout", (req, res) => {
   res.cookie("token", "", { sameSite: "none", secure: true }).json({
     success: true,
-    message: "User logged out",
+    message: `${req.body.username} logged out`,
   });
 
   res.clearCookie("token").json({
@@ -342,55 +341,3 @@ const startServer = async () => {
   }
 };
 startServer();
-
-/*
-import { EventEmitter } from "events"; // import event emitter
-
-const getLetter = (index) => {
-  let cipher = "*12345K%^*^&*"; //will be a fetch function in a real scenario which will fetch a new cypher every time
-  let cipher_split = cipher.split("");
-  return cipher_split[index];
-};
-
-const emitterFn = () => {
-  const emitter = new EventEmitter(); //initializing new emitter
-  let counter = 0;
-  const interval = setInterval(() => {
-    counter++;
-
-    if (counter === 7) {
-      clearInterval(interval);
-      emitter.emit("end");
-    }
-
-    let letter = getLetter(counter);
-
-    if (isNaN(letter)) {
-      //Check if the received value is a number
-      counter < 7 &&
-        emitter.emit(
-          "error",
-          new Error(`The index ${counter} needs to be a digit`)
-        );
-      return;
-    }
-    counter < 7 && emitter.emit("success", counter);
-  }, 1000);
-
-  return emitter;
-};
-
-const listener = emitterFn();
-
-listener.on("end", () => {
-  console.info("All six indexes have been checked");
-});
-
-listener.on("success", (counter) => {
-  console.log(`${counter} index is an integer`);
-});
-
-listener.on("error", (err) => {
-  console.error(err.message);
-});
-*/
