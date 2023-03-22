@@ -349,7 +349,7 @@ const Chat = () => {
 
               {isSelected ? (
                 <div className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10">
-                  <div className="text-gray-400">
+                  <div className="text-gray-700">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}

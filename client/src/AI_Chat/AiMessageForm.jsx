@@ -1,33 +1,88 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const AiMessageForm = () => {
   const [prompt, setPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState({});
+  const [displayPrompt, setDisplayPrompt] = useState("");
+  const [storeAiResponse, setStoreAiResponse] = useState({});
+  const [storePrompt, setStorePrompt] = useState("");
 
-  const handleSubmit = (e) => {
+  //store response in localStorage to allow for reloading of page
+  useEffect(() => {
+    const storedAiResponse = localStorage.getItem("aiResponse");
+    const storedPrompt = localStorage.getItem("prompt");
+    if (storedAiResponse) {
+      setAiResponse(JSON.parse(storedAiResponse));
+    }
+    if (storedPrompt) {
+      setPrompt(JSON.parse(storedPrompt));
+    }
+  }, [storeAiResponse, storePrompt]);
+
+  const handlePromptSubmit = (e) => {
     e.preventDefault();
 
     axios.post("/openai", { prompt }).then((res) => {
-      const { data } = res;
+      setAiResponse(res.data);
+      console.log(res.data);
 
-      setAiResponse({ ...data?.data?.response });
-      console.log(data);
-      console.log("Prompt: ", aiResponse);
+      displayPrompt
+        ? setDisplayPrompt(displayPrompt + prompt)
+        : setDisplayPrompt(prompt);
+
+      // // store response in localStorage
+      // localStorage.setItem("aiResponse", JSON.stringify(res.data));
+      // localStorage.setItem("prompt", JSON.stringify(prompt));
+
+      // // store response in state
+      // setStoreAiResponse(res.data);
+      // setStorePrompt(prompt);
+
+      // Clear the prompt
+      setPrompt("");
     });
   };
+
+  const aiResponseChoices = aiResponse?.data?.response || false;
+
+  // format code from response so that it mirrors the exact response from AI
+  const formatCode = (code) => {
+    if (code) {
+      const formattedCode = code
+        .replace(/\\n/g, "\n\n")
+        .replace(/\\t/g, "\t")
+        .replace(/\\r/g, "\r")
+        .replace(/\\f/g, "\f")
+        .replace(/\\b/g, "\b")
+        .replace(/\\v/g, "\v")
+        .replace(/\\'/g, "'")
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, "\\");
+      return formattedCode;
+    } else {
+      return false;
+    }
+  };
+
+  console.log(
+    "\nStore Prompt: ",
+    storePrompt,
+    "\nStore Ai Response: ",
+    storeAiResponse
+  );
 
   return (
     <form
       className="flex flex-col gap-6 p-3 items-center h-fit"
       id="ai__chat__message__form"
-      onSubmit={handleSubmit}
+      onSubmit={handlePromptSubmit}
     >
       <label>
-        <h3 className="text-gray-800 text-sm">Prompt</h3>
+        <h3 className="text-gray-800 text-base">Prompt</h3>
       </label>
       <input
-        className="w-full"
+        className="w-full h-[40px] rounded-sm border border-gray-300 px-4 py-2 text-gray-800 text-sm focus:outline-none focus:border-blue-500"
         type="text"
         placeholder="Type a prompt..."
         value={prompt}
@@ -35,14 +90,20 @@ const AiMessageForm = () => {
       />
 
       {aiResponse ? (
-        <div>
+        <div className="flex flex-col gap-2 p-3 items-center h-fit">
+          {displayPrompt ? (
+            <p className="text-gray-800 text-sm">
+              <strong>Prompt: </strong>
+              {displayPrompt}
+            </p>
+          ) : (
+            false
+          )}
           <label>
-            <h3 className="text-gray-800 text-sm">Response</h3>
+            <h3 className="text-gray-800 text-base">Response</h3>
           </label>
-          <p>
-            <span className="text-gray-800">
-              {aiResponse?.choices?.[0]?.text}
-            </span>
+          <p className="text-gray-800 text-sm">
+            {formatCode(aiResponseChoices)}
           </p>
         </div>
       ) : (

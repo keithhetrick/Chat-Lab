@@ -28,7 +28,7 @@ export const UserContextProvider = ({ children }) => {
     });
   }, []);
 
-  console.log("\nUSER CONTEXT", { password });
+  // console.log("\nUSER CONTEXT", { password });
 
   return (
     <UserContext.Provider
