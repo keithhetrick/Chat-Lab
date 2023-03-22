@@ -15,12 +15,10 @@ const Chat = () => {
   const [newMessageText, setNewMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [editUser, setEditUser] = useState(false);
-  const [aiChat, setAiChat] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
 
   const handleAiChannelSelect = () => {
-    setIsSelected((prev) => !prev);
-    console.log("isSelected", isSelected);
+    setIsSelected(!isSelected);
   };
 
   const divUnderMessages = useRef();
@@ -174,6 +172,34 @@ const Chat = () => {
     setEditUser((prev) => !prev);
   };
 
+  // if isSelected is true, reset selectedUserId to null to avoid showing the chat window – same for reverse case. useRef to make cleaner/smoother experience
+  // useEffect(() => {
+  //   if (isSelected) {
+  //     setSelectedUserId(null);
+  //   }
+
+  //   if (selectedUserId) {
+  //     setIsSelected(false);
+  //   }
+  // }, [isSelected, selectedUserId]);
+
+  // set a timer that loops through 3 🚀🚀🚀 emojis and then resets to 1 🚀 emoji
+  const [emoji, setEmoji] = useState("🚀");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (emoji === "🚀") {
+        setEmoji("🚀🚀");
+      } else if (emoji === "🚀🚀") {
+        setEmoji("🚀🚀🚀");
+      } else if (emoji === "🚀🚀🚀") {
+        setEmoji("🚀");
+      }
+    }, 500);
+
+    return () => clearInterval(timer);
+  }, [emoji]);
+
   return (
     <div id="window__section" className="flex h-screen">
       <aside
@@ -182,18 +208,29 @@ const Chat = () => {
       >
         <div
           id="sidebar__contacts__section"
-          className="flex-grow overflow-auto"
+          className="flex-grow overflow-auto relative"
         >
           <Logo />
-          <div onClick={handleAiChannelSelect}>
-            <AiChat
-              aiChat={aiChat}
-              setAiChat={setAiChat}
-              setIsSelected={setIsSelected}
-              isSelected={isSelected}
-            />
-          </div>
-          <div id="contacts__list" className="flex-auto text-xs sm:text-base">
+          <button
+            className={
+              "border-b border-gray-200 flex items-center gap-2 cursor-pointer transition " +
+              (isSelected ? "text-red-500" : "text-gray-500")
+            }
+            onClick={handleAiChannelSelect}
+          >
+            {isSelected && (
+              <div className="w-1 bg-red-500 h-12 rounded-r-md"></div>
+            )}
+            <div className="flex gap-2 p-2 px-4 w-full items-center justify-between hover:transform hover:scale-105 transition-all duration-100">
+              <div className="flex gap-2 items-center">
+                AI Chat {isSelected ? `Running ${emoji}` : "Activate"}
+              </div>
+            </div>
+          </button>
+          <div
+            id="contacts__list"
+            className="absolute flex-auto text-xs sm:text-base"
+          >
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
                 key={userId}
@@ -310,8 +347,6 @@ const Chat = () => {
                 <div className="flex flex-col items-center justify-center h-full relative">
                   <div className=" text-gray-400">
                     <AiChat
-                      aiChat={aiChat}
-                      setAiChat={setAiChat}
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
                     />
