@@ -193,6 +193,10 @@ const Chat = () => {
       } else if (emoji === "🚀🚀") {
         setEmoji("🚀🚀🚀");
       } else if (emoji === "🚀🚀🚀") {
+        setEmoji("🚀🚀🚀🚀");
+      } else if (emoji === "🚀🚀🚀🚀") {
+        setEmoji("🚀🚀🚀🚀🚀");
+      } else if (emoji === "🚀🚀🚀🚀🚀") {
         setEmoji("🚀");
       }
     }, 500);
@@ -213,7 +217,7 @@ const Chat = () => {
           <Logo />
           <button
             className={
-              "border-b border-gray-200 flex items-center gap-2 cursor-pointer transition " +
+              "border-b border-gray-200 flex items-center cursor-pointer transition w-full " +
               (isSelected ? "text-red-500" : "text-gray-500")
             }
             onClick={handleAiChannelSelect}
@@ -221,16 +225,13 @@ const Chat = () => {
             {isSelected && (
               <div className="w-1 bg-red-500 h-12 rounded-r-md"></div>
             )}
-            <div className="flex gap-2 p-2 px-4 w-full items-center justify-between hover:transform hover:scale-105 transition-all duration-100">
-              <div className="flex gap-2 items-center">
+            <div className="flex p-3 px-6 w-full items-center justify-between hover:transform hover:scale-105 transition-all duration-100">
+              <div className="flex items-center">
                 AI Chat {isSelected ? `Running ${emoji}` : "Activate"}
               </div>
             </div>
           </button>
-          <div
-            id="contacts__list"
-            className="absolute flex-auto text-xs sm:text-base"
-          >
+          <div id="contacts__list" className="flex-auto text-xs sm:text-base">
             {Object.keys(onlinePeopleExcludingOurUser).map((userId) => (
               <Contact
                 key={userId}
@@ -255,7 +256,7 @@ const Chat = () => {
         </div>
         <div
           id="sideber__footer__section"
-          className="p-2 text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#ffe8d7]"
+          className="p-[10px] text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#ffe8d7]"
           // bg-[#fffaf7]
         >
           <span className="mr-2 text-sm text-gray-600 flex items-center gap-1">
@@ -275,7 +276,7 @@ const Chat = () => {
           </span>
           <button
             onClick={logout}
-            className="bg-blue-500 tracking-wide text-white text-sm block w-fit max-h-fit chat__lab__font rounded-sm py-1 px-2 hover:bg-blue-600 transition duration-200"
+            className="bg-blue-500 tracking-wide text-white text-sm block w-fit max-h-fit chat__lab__font rounded-sm py-2 px-4 hover:bg-blue-600 transition duration-200"
           >
             logout
           </button>
@@ -313,7 +314,10 @@ const Chat = () => {
 
         <main id="chat__window" className="flex-grow px-2 pt-2">
           {!selectedUserId || editUser ? (
-            <div className="flex flex-col items-center justify-center h-full relative">
+            <div
+              className="flex flex-col items-center justify-center h-full relative"
+              id="update__user__modal__hidden"
+            >
               <div className=" text-gray-400">
                 {editUser ? (
                   <EditUser
@@ -344,8 +348,8 @@ const Chat = () => {
               ) : null} */}
 
               {isSelected ? (
-                <div className="flex flex-col items-center justify-center h-full relative">
-                  <div className=" text-gray-400">
+                <div className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10">
+                  <div className="text-gray-400">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
