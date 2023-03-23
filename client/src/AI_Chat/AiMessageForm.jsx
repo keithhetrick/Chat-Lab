@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+function findHighestValue(arr) {
+  let highestValue = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > highestValue) {
+      highestValue = arr[i];
+    }
+  }
+  return highestValue;
+}
+
 const AiMessageForm = () => {
   const [prompt, setPrompt] = useState("");
   const [aiResponse, setAiResponse] = useState({});
