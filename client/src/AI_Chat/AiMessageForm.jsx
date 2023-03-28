@@ -75,12 +75,12 @@ const AiMessageForm = () => {
     }
   };
 
-  console.log(
-    "\nStore Prompt: ",
-    storePrompt,
-    "\nStore Ai Response: ",
-    storeAiResponse
-  );
+  // console.log(
+  //   "\nStore Prompt: ",
+  //   storePrompt,
+  //   "\nStore Ai Response: ",
+  //   storeAiResponse
+  // );
 
   return (
     <form
@@ -112,9 +112,9 @@ const AiMessageForm = () => {
           <label>
             <h3 className="text-gray-800 text-base">Response</h3>
           </label>
-          <p className="text-gray-800 text-sm">
+          <pre className="text-gray-800 text-sm">
             {formatCode(aiResponseChoices)}
-          </p>
+          </pre>
         </div>
       ) : (
         false
