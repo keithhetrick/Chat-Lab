@@ -84,7 +84,7 @@ const AiMessageForm = () => {
 
   return (
     <form
-      className="flex flex-col gap-6 p-3 items-center h-fit"
+      className="flex flex-col gap-6 p-3 items-center h-fit overflow-auto"
       id="ai__chat__message__form"
       onSubmit={handlePromptSubmit}
     >
@@ -112,7 +112,7 @@ const AiMessageForm = () => {
           <label>
             <h3 className="text-gray-800 text-base">Response</h3>
           </label>
-          <pre className="text-gray-800 text-sm">
+          <pre className="text-gray-800 text-sm max-h-36">
             {formatCode(aiResponseChoices)}
           </pre>
         </div>
