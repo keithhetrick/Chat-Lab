@@ -112,7 +112,7 @@ const AiMessageForm = () => {
           <label>
             <h3 className="text-gray-800 text-base">Response</h3>
           </label>
-          <pre className="text-gray-800 text-sm max-h-36">
+          <pre className="text-gray-800 text-sm max-h-36 flex-wrap">
             {formatCode(aiResponseChoices)}
           </pre>
         </div>
