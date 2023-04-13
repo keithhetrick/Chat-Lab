@@ -407,7 +407,7 @@ const Chat = () => {
                   className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10"
                   id="ai__chat__outer__wrapper"
                 >
-                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6]">
+                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-11/12 m-auto shadow-md">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
@@ -607,7 +607,6 @@ const Chat = () => {
         <div
           id="sideber__footer__section"
           className="p-[10px] text-center flex xs:flex-grow xs:overflow-auto items-center justify-center border-t bg-[#ffe8d7]"
-          // bg-[#fffaf7]
         >
           <span className="mr-2 text-sm text-gray-600 flex items-center gap-1">
             <svg
@@ -706,7 +705,7 @@ const Chat = () => {
                   className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10"
                   id="ai__chat__outer__wrapper"
                 >
-                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6]">
+                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-3/4 m-auto shadow-md">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
