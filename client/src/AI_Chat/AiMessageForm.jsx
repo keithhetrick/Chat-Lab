@@ -100,7 +100,7 @@ const AiMessageForm = () => {
       />
 
       {aiResponse ? (
-        <div className="flex flex-col gap-2 p-3 items-center h-fit">
+        <div className="flex flex-col gap-2 p-3 items-center h-fit w-full">
           {displayPrompt ? (
             <p className="text-gray-800 text-sm">
               <strong>Prompt: </strong>
@@ -112,7 +112,7 @@ const AiMessageForm = () => {
           <label>
             <h3 className="text-gray-800 text-base">Response</h3>
           </label>
-          <pre className="text-gray-800 text-sm max-h-36 flex-wrap">
+          <pre className="text-gray-800 text-sm max-h-36 flex-wrap w-full">
             {formatCode(aiResponseChoices)}
           </pre>
         </div>

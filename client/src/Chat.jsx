@@ -407,7 +407,7 @@ const Chat = () => {
                   className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10"
                   id="ai__chat__outer__wrapper"
                 >
-                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-11/12 m-auto shadow-md">
+                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-11/12 m-auto shadow-md max-h-screen">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
@@ -705,7 +705,7 @@ const Chat = () => {
                   className="flex flex-col justify-center h-fit w-full absolute top-0 bottom-0 left-0 right-0 m-auto z-10"
                   id="ai__chat__outer__wrapper"
                 >
-                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-3/4 m-auto shadow-md">
+                  <div className="text-gray-700 overflow-auto bg-[#f6f6f6] w-3/4 m-auto shadow-md max-h-screen">
                     <AiChat
                       setIsSelected={setIsSelected}
                       isSelected={isSelected}
